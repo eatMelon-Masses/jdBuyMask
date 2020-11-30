@@ -279,15 +279,16 @@ def get_checkout_page_detail():
 
     :return: 结算信息 dict
     """
-    url = 'http://trade.jd.com/shopping/order/getOrderInfo.action'
+    url = 'https://trade.jd.com/shopping/order/getOrderInfo.action'
     # url = 'https://cart.jd.com/gotoOrder.action'
     payload = {
-        'rid': str(int(time.time() * 1000)),
+#        'rid': str(int(time.time() * 1000)),
     }
     headers = {
+
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/531.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
-        "Referer": "https://cart.jd.com/cart.action",
+        "Referer": "https://cart.jd.com/",
         "Connection": "keep-alive",
         'Host': 'trade.jd.com',
     }
@@ -381,7 +382,7 @@ def fastModeBuyMask(sku_id):
     risk_control = get_checkout_page_detail()
     if risk_control == '刷新太频繁了':
         return False
-    if len(risk_control) > 0:
+    if len(risk_control) >= 0:
         if submit_order(session, risk_control, sku_id, skuids, submit_Time, encryptClientInfo, is_Submit_captcha,
                         payment_pwd, submit_captcha_text, submit_captcha_rid):
             return True
@@ -440,7 +441,7 @@ def normalModeAutoBuy(inStockSkuid):
         if item_removed(skuId):
             global submit_Time
             submit_Time = int(time.time() * 1000)
-            logger.info('[%s]类型口罩有货啦!马上下单', skuId)
+            logger.info('[%s]类型商品有货啦!马上下单', skuId)
             skuidUrl = 'https://item.jd.com/' + skuId + '.html'
             if normalModeBuyMask(skuId):
                 message.send(skuidUrl, True)
@@ -455,7 +456,7 @@ def fastModeAutoBuy(inStockSkuid):
     for skuId in inStockSkuid:
         global submit_Time
         submit_Time = int(time.time() * 1000)
-        logger.info('[%s]类型口罩有货啦!马上下单', skuId)
+        logger.info('[%s]类型商品有货啦!马上下单', skuId)
         skuidUrl = 'https://item.jd.com/' + skuId + '.html'
         if fastModeBuyMask(skuId):
             message.send(skuidUrl, True)
